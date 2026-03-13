@@ -11,16 +11,21 @@ namespace Accounts.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddDbContext<AccountDbContext>(options =>
+            {
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             var app = builder.Build();
 
-            app.MapGet("/ready", async (PrepareTransferRequest request, AccountDbContext _context) =>
+            app.MapPost("/ready", async (PrepareTransferRequest request, AccountDbContext _context) =>
             {
                 if (request.Amount <= 0) return false;
 
                 var existing = await _context.AccountTransferIntents.FirstOrDefaultAsync(x => x.TransactionId == request.TransactionId);
-                if (existing == null)
+                if (existing != null)
                 {
-                    return false;
+                    return true;
                 }
 
                 var from = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.FromAccountId);

@@ -18,14 +18,14 @@ namespace Ledger.API
 
             var app = builder.Build();
 
-            app.MapGet("/ready", async (PrepareTransferRequest request, LedgerDbContext _context) =>
+            app.MapPost("/ready", async (PrepareTransferRequest request, LedgerDbContext _context) =>
             {
                 if (request.Amount <= 0) return false;
 
                 var existing = await _context.Ledgers.FirstOrDefaultAsync(x => x.TransactionId == request.TransactionId);
-                if (existing == null)
+                if (existing != null)
                 {
-                    return false;
+                    return true;
                 }
 
                 await _context.Ledgers.AddAsync(new Models.Entities.Ledger

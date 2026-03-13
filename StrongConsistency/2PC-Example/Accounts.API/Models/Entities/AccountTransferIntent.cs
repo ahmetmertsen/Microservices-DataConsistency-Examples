@@ -4,6 +4,7 @@ namespace Accounts.API.Models.Entities
 {
     public class AccountTransferIntent
     {
+        public Guid Id { get; set; }
         public string TransactionId { get; set; }
         public Guid FromAccountId { get; set; }
         public Guid ToAccountId { get; set; }

@@ -14,8 +14,15 @@ namespace Coordinator.Models
         {
             modelBuilder.Entity<Node>()
                 .HasData(
-                    new Node("Accounts.API") { Id = Guid.NewGuid() },
-                    new Node("Ledger.API") { Id = Guid.NewGuid() }
+                    new Node{ 
+                        Id = Guid.NewGuid(),
+                        Name = "Accounts.API"
+                    },
+                    new Node
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Ledger.API"
+                    }
                 );
         }
     }
