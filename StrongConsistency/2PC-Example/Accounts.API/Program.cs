@@ -17,6 +17,12 @@ namespace Accounts.API
             {
                 if (request.Amount <= 0) return false;
 
+                var existing = await _context.AccountTransferIntents.FirstOrDefaultAsync(x => x.TransactionId == request.TransactionId);
+                if (existing == null)
+                {
+                    return false;
+                }
+
                 var from = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.FromAccountId);
                 var to = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.ToAccountId);
                 if (from == null || to == null) return false;
@@ -28,7 +34,8 @@ namespace Accounts.API
                     FromAccountId = request.FromAccountId,
                     ToAccountId = request.ToAccountId,
                     Amount = request.Amount,
-                    Status = Models.Enums.Status.Ready
+                    Status = Models.Enums.Status.Ready,
+                    CreatedAt = DateTime.UtcNow
                 });
 
                 await _context.SaveChangesAsync();

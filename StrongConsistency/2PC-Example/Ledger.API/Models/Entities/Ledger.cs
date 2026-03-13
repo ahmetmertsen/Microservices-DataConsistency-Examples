@@ -1,12 +1,16 @@
-﻿namespace Ledger.API.Models.Entities
+﻿using Ledger.API.Models.Enums;
+
+namespace Ledger.API.Models.Entities
 {
     public class Ledger
     {
         public Guid Id { get; set; }
-        public Guid TransactionId { get; set; }
-        public long FromAccount { get; set; }
-        public long ToAccount { get; set; }
-        public decimal amount { get; set; }
+        public string TransactionId { get; set; }
+        public Guid FromAccountId { get; set; }
+        public Guid ToAccountId { get; set; }
+        public decimal Amount { get; set; }
+        public Status Status { get; set; }
+
         public DateTime CreatedAt { get; set; }
     }
 }
