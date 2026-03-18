@@ -50,18 +50,28 @@ namespace Order.API
 
             app.MapPost("/create-order", async (CreateOrderDto dto, OrderApiDbContext context, IPublishEndpoint publishEndpoint) =>
             {
-                Models.Entities.Order order = new()
+                var productIds = dto.OrderItems.Select(i => i.ProductId).Distinct().ToList();
+
+                var products = await context.Products
+                    .Where(p => productIds.Contains(p.Id))
+                    .ToListAsync();
+
+                var priceMap = products.ToDictionary(p => p.Id, p => p.Price);
+
+                var orderItems = dto.OrderItems.Select(oi => new OrderItem
+                {
+                    ProductId = oi.ProductId,
+                    Count = oi.Count,
+                    Price = priceMap[oi.ProductId]
+                }).ToList();
+
+                var order = new Models.Entities.Order
                 {
                     BuyerId = dto.BuyerId,
-                    OrderItems = dto.OrderItems.Select(oi => new OrderItem()
-                    {
-                        Count = oi.Count,
-                        Price = oi.Price,
-                        ProductId = oi.ProductId
-                    }).ToList(),
+                    OrderItems = orderItems,
                     OrderStatus = Models.Enums.OrderStatus.Pending,
                     CreatedAt = DateTime.UtcNow,
-                    TotalPrice = dto.OrderItems.Sum(oi => oi.Price * oi.Count)
+                    TotalPrice = orderItems.Sum(i => i.Price * i.Count)
                 };
                 await context.Orders.AddAsync(order);
                 await context.SaveChangesAsync();
