@@ -1,6 +1,6 @@
-﻿namespace Inventory.API.Models.Entities
+﻿namespace Stock.API.Models.Entities
 {
-    public class Inventory
+    public class Stock
     {
         public Guid Id { get; set; }
         public Guid ProductId { get; set; }

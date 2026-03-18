@@ -1,11 +1,11 @@
 
-using Inventory.API.Consumers;
-using Inventory.API.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Shared;
+using Stock.API.Consumers;
+using Stock.API.Models;
 
-namespace Inventory.API
+namespace Stock.API
 {
     public class Program
     {
@@ -13,7 +13,7 @@ namespace Inventory.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<InventoryApiDbContext>(options =>
+            builder.Services.AddDbContext<StockApiDbContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
