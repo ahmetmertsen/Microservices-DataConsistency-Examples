@@ -21,11 +21,13 @@ namespace Stock.API
             builder.Services.AddMassTransit(configurator =>
             {
                 configurator.AddConsumer<OrderCreatedEventConsumer>();
+                configurator.AddConsumer<PaymentFailedEventConsumer>();
 
                 configurator.UsingRabbitMq((context, _configure) =>
                 {
                     _configure.Host(builder.Configuration["RabbitMQ"]);
                     _configure.ReceiveEndpoint(RabbitMQSettings.Stock_OrderCreatedEventQueue, e => e.ConfigureConsumer<OrderCreatedEventConsumer>(context));
+                    _configure.ReceiveEndpoint(RabbitMQSettings.Stock_PaymentFailedEventQueue, e => e.ConfigureConsumer<PaymentFailedEventConsumer>(context));
                 });
             });
 
