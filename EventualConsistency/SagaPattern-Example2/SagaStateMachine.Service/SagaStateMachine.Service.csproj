@@ -19,9 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="StateMachines\" />
-    <Folder Include="StateMaps\" />
-    <Folder Include="StateDbContexts\" />
-    <Folder Include="StateIstances\" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 </Project>
