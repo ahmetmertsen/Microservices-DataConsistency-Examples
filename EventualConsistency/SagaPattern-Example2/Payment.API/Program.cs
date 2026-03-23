@@ -1,4 +1,8 @@
 
+using MassTransit;
+using Payment.API.Consumers;
+using Shared.Settings;
+
 namespace Payment.API
 {
     public class Program
@@ -7,28 +11,19 @@ namespace Payment.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddMassTransit(configurator =>
+            {
+                configurator.AddConsumer<PaymentStartedEventConsumer>();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+                configurator.UsingRabbitMq((context, _configure) =>
+                {
+                    _configure.Host(builder.Configuration["RabbitMQ"]);
+
+                    _configure.ReceiveEndpoint(RabbitMQSettings.Payment_StartedEventQueue, e => e.ConfigureConsumer<PaymentStartedEventConsumer>(context));
+                });
+            });
 
             var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
 
             app.Run();
         }
