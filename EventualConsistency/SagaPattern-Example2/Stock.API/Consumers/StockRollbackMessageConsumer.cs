@@ -23,10 +23,9 @@ namespace Stock.API.Consumers
                 if (stock != null)
                 {
                     stock.Count += orderItem.Count;
-                }
-
-                await _contextDb.SaveChangesAsync();
+                }   
             }
+            await _contextDb.SaveChangesAsync();
         }
     }
 }
